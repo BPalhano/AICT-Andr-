@@ -1,7 +1,7 @@
 # Source Separation
 
 In this folder I put a exercise passed to me by Dr. Bruno Sokal, here I have
-to separate two signals X$_{1}$ and X$_{2}$, the first one is mapped in BPSK
+to separate two signals $X_{1}$ and $X_{2}$, the first one is mapped in BPSK
 constellation and the second by a 4-QAM. The first problem multiplex the 
 signals with a Kronecker Product and in the second one by a Khatri-Rao 
 product.
