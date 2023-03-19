@@ -1,0 +1,43 @@
+close all;
+clear;
+clc;
+% Cleaning all values and figures in MATLAB for a new compilation;
+
+phi1 = [1 exp(1i*pi)];
+phi2 = [1, exp(1i*(pi + pi/2))];
+phi3 = [1, exp(1i*(pi + pi/4))];
+% Generating the already known signals;
+
+phi4 = kron(phi1, phi2);
+phi = kron(phi4, phi3);
+
+t = tiledlayout(2,2);
+
+nextile
+scatter(real(phi1), imag(phi), 'filled', 'blue');
+
+nextile
+scatter(real(phi), imag(phi),'filled', 'black')
+circleplot(0,0,1);
+
+
+
+
+hold on
+grid on
+title("n-PSK by a kronecker product from others signals")
+xlabel("In-Phase")
+ylabel("Quadrature")
+hold off
+
+
+function h =circleplot(x,y,r)
+hold on
+th = 0:pi/50:2*pi;
+xunit = r * cos(th) + x;
+yunit = r * sin(th) + y;
+h = plot(xunit, yunit, "--", 'Color','black');
+axis equal
+hold off
+
+end 
