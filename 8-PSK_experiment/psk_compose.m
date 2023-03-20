@@ -12,7 +12,6 @@ phi4 = kron(phi1, phi2);
 phi = kron(phi4, phi3);
  % Generating the n-PSK signal;
 
-
 t = tiledlayout(2,2);
 % Scatterploting
 
