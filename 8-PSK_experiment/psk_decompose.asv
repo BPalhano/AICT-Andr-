@@ -10,58 +10,29 @@ phi3 = [1, exp(1i*(pi + pi/4))];
 
 phi4 = kron(phi1, phi2);
 phi = kron(phi4, phi3);
- % Generating the n-PSK signal;
 
- signal = reshape(phi, [2 4]);
+% Reshaping the signal to do SVD:
+signal = reshape(phi, [2 4]);
 
-[U,S1,V] = svd(signal);
-phi3_hat = U(:,1)'; % suppose to have sigma_{1} multiplying here.
-ni = V(:,1);
+% Do SVD and recompose the eta and phi3:
+[U1, S1, V1] = svd(signal);
+sigma1 = S1(1,1);
+phi3_hat = U1(:,1)*sqrt(sigma1);
+eta = sqrt(sigma1)*conj(V1(:,1));
 
-ni = reshape(ni, [2 2]);
-[U,S2,V] = svd(ni);
-phi2_hat = U(:,1)*S2(1,1);
-phi1_hat = V(:,1);
+% Cat the bases and signal to resolve the scale problem:
+alpha = 1 / phi3_hat(1,1);
+beta = 1 / eta(1,1);
 
-% Test sector
-phi1_hat = phi1_hat .* sec(pi/4);
-phi2_hat = phi2_hat .* sec(pi/4);
-phi3_hat = phi3_hat .* sec(pi/4);
-% This sec(pi/4) it's like a strechling factor.
+% Normalizing tensors:
+phi3_hat = phi3_hat * alpha;
+eta = eta * beta;
 
-phi2_hat = [cos(pi/2), -sin(pi/2);sin(pi/2), cos(pi/2)] * phi2_hat;
-phi3_hat = [cos(pi/2), -sin(pi/2);sin(pi/2), cos(pi/2)] * phi3_hat;
+% Repeat the process to eta to get phi1 and phi2:
+eta = reshape(eta, [2 2]);
 
-% Test sector
+[U2, S2, V2] = svd(eta);
+sigma2 = S2(1,1);
 
-t = tiledlayout(2,2);
-% Scatterploting
-
-nexttile
-scatter(real(phi1_hat), imag(phi1_hat), 'filled', 'blue');
-circleplot(0,0,1);
-xlabel("In-Phase")
-ylabel("Quadrature")
-grid on
-
-nexttile
-scatter(real(phi2_hat), imag(phi2_hat), 'filled', 'red');
-circleplot(0,0,1);
-xlabel("In-Phase")
-ylabel("Quadrature")
-grid on
-
-nexttile
-scatter(real(phi3_hat), imag(phi3_hat), 'filled', 'MarkerFaceColor', '#77AC30');
-circleplot(0,0,1);
-xlabel("In-Phase")
-ylabel("Quadrature")
-grid on
-
-nexttile
-scatter(real(phi), imag(phi),'filled', 'black')
-circleplot(0,0,1);
-grid on
-
-xlabel("In-Phase")
-ylabel("Quadrature")
+phi2_hat = U2(:,1)*sqrt(sigma2);
+phi1_hat = sqrt(sigma2)*conj(V2)

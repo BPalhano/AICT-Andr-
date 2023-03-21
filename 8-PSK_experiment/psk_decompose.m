@@ -10,36 +10,43 @@ phi3 = [1, exp(1i*(pi + pi/4))];
 
 phi4 = kron(phi1, phi2);
 phi = kron(phi4, phi3);
- % Generating the n-PSK signal;
 
- signal = reshape(phi, [2 4]);
+% Reshaping the signal to do SVD:
+signal = reshape(phi, [2 4]);
 
-[U,S1,V] = svd(signal);
-phi3_hat = U(:,1)'; % suppose to have sigma_{1} multiplying here.
-ni = V(:,1);
+% Do SVD and recompose the eta and phi3:
+[U1, S1, V1] = svd(signal);
+sigma1 = S1(1,1);
+phi3_hat = U1(:,1)*sqrt(sigma1);
+eta = sqrt(sigma1)*conj(V1(:,1));
 
-ni = reshape(ni, [2 2]);
-[U,S2,V] = svd(ni);
-phi2_hat = U(:,1)*S2(1,1);
-phi1_hat = V(:,1);
+% Cat the bases and signal to resolve the scale problem:
+alpha = 1 / phi3_hat(1,1);
+beta = 1 / eta(1,1);
 
-% Test sector
-phi1_hat = phi1_hat .* sec(pi/4);
-phi2_hat = phi2_hat .* sec(pi/4);
-phi3_hat = phi3_hat .* sec(pi/4);
-% This sec(pi/4) it's like a strechling factor.
+% Normalizing tensors:
+phi3_hat = phi3_hat * alpha;
+eta = eta * beta;
 
-rot1 = [cos(3*pi/2), -sin(3*pi/2);sin(3*pi/2), cos(3*pi/2)];
-rot2 = [cos(pi), -sin(pi);sin(pi), cos(pi)];
+% Repeat the process to eta to get phi1 and phi2:
+eta = reshape(eta, [2 2]);
 
-phi2_hat = rot1 * phi2_hat;
-phi3_hat = rot2 * phi3_hat';
-% and this rot1 and rot2 are rotational matrix to get the true bases of
-% tensors.
+[U2, S2, V2] = svd(eta);
+sigma2 = S2(1,1);
 
-% Test sector
+phi2_hat = U2(:,1)*sqrt(sigma2);
+phi1_hat = sqrt(sigma2)*conj(V2(:,1));
 
-% Why?
+gamma = 1 / phi2_hat(1,1);
+teta = 1 / phi1_hat(1,1);
+
+phi2_hat = phi2_hat * gamma;
+phi1_hat = phi1_hat * teta;
+
+% And now, I will recompse the signal phi:
+phi_hat = kron(phi1_hat, phi2_hat);
+phi_hat = kron(phi_hat, phi3_hat);
+
 
 t = tiledlayout(2,2);
 % Scatterploting
@@ -66,9 +73,13 @@ ylabel("Quadrature")
 grid on
 
 nexttile
-scatter(real(phi), imag(phi),'filled', 'black')
+scatter(real(phi_hat), imag(phi_hat),'filled', 'black')
 circleplot(0,0,1);
 grid on
 
 xlabel("In-Phase")
 ylabel("Quadrature")
+
+% :)
+% By Igor Braga Palhano
+% :)
