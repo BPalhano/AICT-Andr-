@@ -3,7 +3,7 @@ clear;
 clc;
 % Cleaning all values and figures in MATLAB for a new compilation;
 
-phi1 = [1 exp(1i*pi)];
+phi1 = [1, exp(1i*pi)];
 phi2 = [1, exp(1i*(pi + pi/2))];
 phi3 = [1, exp(1i*(pi + pi/4))];
 % Generating the already known signals;

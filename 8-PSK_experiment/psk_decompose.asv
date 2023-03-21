@@ -29,17 +29,10 @@ phi2_hat = phi2_hat .* sec(pi/4);
 phi3_hat = phi3_hat .* sec(pi/4);
 % This sec(pi/4) it's like a strechling factor.
 
-rot1 = [cos(3*pi/2), -sin(3*pi/2);sin(3*pi/2), cos(3*pi/2)];
-rot2 = [cos(pi), -sin(pi);sin(pi), cos(pi)];
-
-phi2_hat = rot1 * phi2_hat;
-phi3_hat = rot2 * phi3_hat';
-% and this rot1 and rot2 are rotational matrix to get the true bases of
-% tensors.
+phi2_hat = [cos(pi/2), -sin(pi/2);sin(pi/2), cos(pi/2)] * phi2_hat;
+phi3_hat = [cos(pi/2), -sin(pi/2);sin(pi/2), cos(pi/2)] * phi3_hat;
 
 % Test sector
-
-% Why?
 
 t = tiledlayout(2,2);
 % Scatterploting
