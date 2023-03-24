@@ -1,0 +1,14 @@
+close all;
+clear;
+clc;
+
+% Generating the mapping again:
+phi1 = [1, exp(1i*pi)];
+phi2 = [1, exp(1i*(pi + pi/2))];
+phi3 = [1, exp(1i*(pi + pi/4))];
+
+phi4 = kron(phi1, phi2);
+phi = kron(phi4, phi3);
+ % Generating the n-PSK signal;
+
+ 

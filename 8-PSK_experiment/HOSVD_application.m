@@ -16,3 +16,5 @@ phi = kron(phi4, phi3);
  signal = reshape(phi, [2 2 2])
 
  % And now, I can apply HOSVD dim-to-dim for this problem.
+
+
