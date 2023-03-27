@@ -1,0 +1,7 @@
+function symbols_hat = bpsk_decider(symbols, filter)
+
+symbols_hat = zeros(size(symbols,1), size(symbols,2));
+
+
+end
+

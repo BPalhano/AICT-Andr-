@@ -2,13 +2,42 @@ close all;
 clear;
 clc;
 
-% Generating the mapping again:
-phi1 = [1, exp(1i*pi)];
-phi2 = [1, exp(1i*(pi + pi/2))];
-phi3 = [1, exp(1i*(pi + pi/4))];
+bits = 16;
 
-phi4 = kron(phi1, phi2);
-phi = kron(phi4, phi3);
- % Generating the n-PSK signal;
+% Generating the mapping again:
+BPSK = [1, exp(1i*pi)];
+
+% Generating the information;
+s = randi(5,1,bits);
+s = (s < 5);
+x = BPSK_mapping(s);
+ 
+% generating A and B;
+n = bits/2;
+
+A = x(:,1:n);
+B = x(:,n+1:end);
+
+% Generating C:
+C = kron(A,B);
+
+% Generating AWGN:
+
+
+% Here I have to do a Monte-Carlo simulation.
+for EbN0 = -5:20 % SNR range
+    
+    sigma = norm(C, "fro") / (EbN0 * norm(n,"fro"));
+    
+    
+    y = C + sigma*n;
+    [A_hat, B_hat] = norm_lskf(reshape(y, [8 8]), 1);
+    
+end
+
+A_hat = bpsk_decider(A_hat, 0);
+B_hat = bpsk_decider(B_hat, 0);
+
+s_hat = [A_hat' B_hat'];
 
  

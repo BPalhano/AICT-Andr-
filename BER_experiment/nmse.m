@@ -8,7 +8,7 @@ function [graph] = nmse(tensor_hat, tensor, EbN0_range)
             / (norm(tensor(i,:), "fro"))^2);
     end
 
-    graph = plot(EbN0_range, NMSE, "Marker","diamond");
+    graph = plot(NMSE, EbN0_range, "Marker","diamond");
 
 end
 

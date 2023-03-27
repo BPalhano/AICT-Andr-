@@ -25,16 +25,19 @@ C = kron(A,B);
 
 
 % Here I have to do a Monte-Carlo simulation.
-for i = -5:20 % SNR range
+for EbN0 = -5:20 % SNR range
     
-    EbN0 = 10^(i/10);
     sigma = norm(C, "fro") / (EbN0 * norm(n,"fro"));
+    Noise = rand(size(C,1), size(C,2));
     
-    y = C + n;
-    [A_hat, B_hat] = norm_lskf(reshape(y, [8 8]));
+    y = C + sigma*Noise;
+    [A_hat, B_hat] = norm_lskf(reshape(y, [8 8]), 1);
     
 end
 
+A_hat = bpsk_decider(A_hat, 0);
+B_hat = bpsk_decider(B_hat, 0);
 
+s_hat = [A_hat' B_hat'];
 
  
