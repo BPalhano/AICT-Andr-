@@ -1,14 +1,15 @@
-function [graph] = nmse(tensor_hat, tensor, EbN0_range)
+function [graph] = nmse(tensor_hat, tensor)
     
-    NMSE = zeros(size(tensor_hat, 1), size(tensor_hat, 2));
+    N = size(tensor_hat,1);
+    NMSE = zeros(N,1);
 
-    for i = 1:size(tensor,2)
+    for i = 1:N
         
-        NMSE(i,:) = ((norm(tensor(i,:) - tensor_hat(i,:), "fro")) ...
-            / (norm(tensor(i,:), "fro"))^2);
+        ((norm((double(tensor) - tensor_hat(2,:)), "fro")) / ...
+            (norm(double(tensor), "fro"))^(2));
     end
 
-    graph = plot(NMSE, EbN0_range, "Marker","diamond");
+    graph = plot(-20:20,NMSE, "Marker","diamond");
 
 end
 

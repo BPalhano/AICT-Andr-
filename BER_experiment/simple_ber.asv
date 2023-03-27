@@ -15,29 +15,31 @@ x = BPSK_mapping(s);
 % generating A and B;
 n = bits/2;
 
-A = x(:,1:n);
-B = x(:,n+1:end);
+A_8x1 = x(:,1:n);
+B_8x1 = x(:,n+1:end);
 
 % Generating C:
-C = kron(A,B);
+C_8x1 = kron(A_8x1,B_8x1);
 
-% Generating AWGN:
-
+plot_8x1 = [];
 
 % Here I have to do a Monte-Carlo simulation.
-for EbN0 = -5:20 % SNR range
-    
-    sigma = norm(C, "fro") / (EbN0 * norm(n,"fro"));
+for EbN0 = -5:20 % SNR range (dB)
     
     
-    y = C + sigma*n;
-    [A_hat, B_hat] = norm_lskf(reshape(y, [8 8]), 1);
+    sigma = norm(C_8x1, "fro") / (EbN0 * norm(n,"fro"));    
+    Noise = rand(size(C_8x1,1), size(C_8x1,2));
     
+    y_8x1 = C_8x1 + sigma*Noise;
+    [B_8x1_hat, A_8x1_hat] = norm_lskf(reshape(y_8x1, [8 8]), 1);
+    
+    A_8x1_hat = bpsk_decider(A_8x1_hat, 0);
+    B_8x1_hat = bpsk_decider(B_8x1_hat, 0);
+
+    plot_8x1 = [plot_8x1; A_8x1_hat', B_8x1_hat'];
+     
+
 end
 
-A_hat = bpsk_decider(A_hat, 0);
-B_hat = bpsk_decider(B_hat, 0);
-
-s_hat = [A_hat' B_hat'];
 
  
