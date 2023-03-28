@@ -1,5 +1,0 @@
-function graph = ber_plot(estimate, real)
-
-    N = size(estimate,1);
-end
-
