@@ -23,17 +23,15 @@ C_8x1 = kron(A_8x1,B_8x1);
 
 plot_8x1 = [];
 
-realization = 100;
+realization = 10e6;
 
 % Here I have to do a Monte-Carlo simulation.
 for EbN0 = -20:20 % SNR range (dB)
 
     sigma = 1/(10^(EbN0/10)); 
-    % Noise = rand(size(C_8x1,1), size(C_8x1,2));
-    % sigma = norm(C_8x1, "fro") / (i * norm(Noise,"fro"));
 
     for ii = 1:realization
-        
+
         noise = sqrt(sigma) * sqrt(1/2) * (randn(size(C_8x1)) + 1i*randn(size(C_8x1)));
         y_8x1 = C_8x1 + noise;
         [B_8x1_hat, A_8x1_hat] = norm_lskf(reshape(y_8x1, [n n]), 1);
@@ -46,7 +44,7 @@ for EbN0 = -20:20 % SNR range (dB)
     
 end
 
-ber_plot(plot_8x1, s)
+ber_plot(plot_8x1, s, realization)
 
 
  
