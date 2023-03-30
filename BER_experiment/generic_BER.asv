@@ -1,0 +1,26 @@
+function [graph] = lskf_ber(signal, SNR_range, n)
+    
+    act_error = 0;
+    errors = zeros(size(SNR_range));
+    
+    for i = SNR_range
+
+        while act_error < 100
+            
+
+            y = awgn(signal, i);
+            
+            [B,A] = norm_lskf(reshape(y, [n n]), 1);
+
+            signal_hat = [A' B'];
+            signal_hat = bpsk_decider(y_hat, 0);
+            
+            act_error = act_error + biterr(signal, signal_hat);
+        
+        end
+
+        act_error = 0;
+    end
+
+end
+

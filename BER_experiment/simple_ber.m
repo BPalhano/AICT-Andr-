@@ -3,6 +3,8 @@ clear;
 clc;
 
 bits = 16;
+EbN0 = -20:-5;
+error = 0;
 
 % Generating the mapping again:
 BPSK = [1, exp(1i*pi)];
@@ -15,36 +17,14 @@ x = BPSK_mapping(s);
 % generating A and B;
 n = bits/2;
 
-A_8x1 = x(:,1:n);
-B_8x1 = x(:,n+1:end);
+A = x(:,1:n);
+B = x(:,n+1:end);
 
 % Generating C:
-C_8x1 = kron(A_8x1,B_8x1);
+C = kron(A,B);
 
-plot_8x1 = [];
+lskf_ber(C, EbN0, n);
 
-realization = 10e6;
-
-% Here I have to do a Monte-Carlo simulation.
-for EbN0 = -20:20 % SNR range (dB)
-
-    sigma = 1/(10^(EbN0/10)); 
-
-    for ii = 1:realization
-
-        noise = sqrt(sigma) * sqrt(1/2) * (randn(size(C_8x1)) + 1i*randn(size(C_8x1)));
-        y_8x1 = C_8x1 + noise;
-        [B_8x1_hat, A_8x1_hat] = norm_lskf(reshape(y_8x1, [n n]), 1);
-    
-        A_8x1_hat = bpsk_decider(A_8x1_hat, 0);
-        B_8x1_hat = bpsk_decider(B_8x1_hat, 0);
-
-        plot_8x1 = [plot_8x1; A_8x1_hat', B_8x1_hat'];
-    end
-    
-end
-
-ber_plot(plot_8x1, s, realization)
 
 
  

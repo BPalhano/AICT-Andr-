@@ -1,9 +1,10 @@
-function [graph] = ber_plot(estimate, real, loop)
+function [graph] = ber_plot(estimate, real, SNR_range)
 
     N = size(estimate,1);
     error = zeros(N/loop,1);
     MC_error = zeros(loop,1);
     counter = 1;
+    errors = 0;
 
     for i = 1:N
 
@@ -17,7 +18,7 @@ function [graph] = ber_plot(estimate, real, loop)
     end
 
 
-    graph = semilogy(linspace(-20,20, N/loop), error, 'Color', 'blue');
+    graph = semilogy(linspace(SNR_range(1),SNR_range(end), N/loop), error, 'Color', 'blue');
     hold on
     xlabel("Eb/N0");
     ylabel("BER");
