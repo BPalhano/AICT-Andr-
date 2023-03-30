@@ -3,7 +3,7 @@ clear;
 clc;
 
 bits = 16;
-EbN0 = -20:-5;
+EbN0dB = -20:20;
 error = 0;
 
 % Generating the mapping again:
@@ -23,8 +23,11 @@ B = x(:,n+1:end);
 % Generating C:
 C = kron(A,B);
 
-lskf_ber(C, EbN0, n);
 
+semilogy(EbN0dB, qfunc(sqrt(db2pow(EbN0dB))), 'blue')
+hold on
+lskf_ber(C, bpsk_demapping(x), EbN0dB, n, 10000);
+hold off
 
 
  
