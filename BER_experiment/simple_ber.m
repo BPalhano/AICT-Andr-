@@ -3,8 +3,8 @@ clear;
 clc;
 
 % 
-bits = 16;
-EbN0dB = -20:20;
+bits = 64;
+EbN0dB = -20:0;
 error = 0;
 
 % Generating the information;
@@ -57,6 +57,10 @@ for i = EbN0dB
         act_error = act_error + biterr(bpsk_demapping(x), bits_hat);
         symbols = symbols + 2*n;
         
+        if symbols > 10e8
+            break;
+        end
+        
         disp("number of erros")
         disp(act_error)
 
@@ -65,9 +69,8 @@ for i = EbN0dB
     % Redefino como zero o contador do laço
     act_error = 0;
 
-    % Armazeno o para a SNR atual
+    % Armazeno o erro para a SNR atual
     errors(counter) = spec_error / (spec_error + symbols);
-        
     % Redefino como zero a quantidade de símbolos transmitidos
     symbols = 0;
 
@@ -83,7 +86,7 @@ end
 
 semilogy(EbN0dB, errors, 'Color', 'Red'); 
 hold on
-semilogy(EbN0dB, qfunc(sqrt(2*db2pow(EbN0dB))), 'Color', 'Blue')
+semilogy(-20:20, qfunc(sqrt(2*db2pow(-20:20))), 'Color', 'Blue')
 hold off
 
 xlabel("Eb/N0");
@@ -115,5 +118,9 @@ function [A,B] = norm_lskf(tensor, norm)
 
 
 end
+
+
+
+
 
  
