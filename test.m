@@ -5,6 +5,7 @@ hold on
 ylim([10^(-7) ,1])
 semilogy(-20:20, qfunc(sqrt(2*db2pow(-20:20))), 'Color', 'Blue')
 
+
 hold off
 
 xlabel("Eb/N0");
