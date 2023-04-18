@@ -2,38 +2,28 @@ clear;
 clc;
 close all;
 
+tx = 8; rx = 2;
 Mod_order = 64;
-data = randi([0 Mod_order-1], 1000,1);
+data = randi([0 Mod_order-1], tx, 1);
 txSig = pskmod(data, Mod_order, pi/Mod_order);
 
-ntxSig = awgn(txSig,20);
-t = tiledlayout(2,1);
+f = 2.4e9;
+Fd = (2/3.6)/(physconst('LightSpeed')/f);
 
-nexttile
-scatter(real(txSig), imag(txSig), 'filled', 'blue');
-circleplot(0,0,1);
-xlabel("In-Phase")
-ylabel("Quadrature")
-grid on
+RayleighFF = @(tx,rx) (rand(tx,rx) + 1j*rand(tx,rx))/sqrt(2);
 
-nexttile
-scatter(real(ntxSig), imag(txSig), 'filled','green')
-xlabel("In-Phase")
-ylabel("Quadrature")
-grid on
-axis equal
+Rff = RayleighFF(tx,rx);
 
-figure;
+sig = 4; % dB
 
-ray_std = 5.5; % dB
-fc = 2.4e9; % 2.4 GHz
-v_max = 2/3.6; % 2km/h
+SS = randn()*sig; % dB
+SS = db2pow(SS); % linear
 
-lambda = physconst('LightSpeed')/fc;
-fd = v_max / lambda; % frequência máxima de doppler
+PL = 32.4 + 17.3*log10(2.9) + 31.9*log10(300);
+PL = db2pow(PL)^(-1);
 
-sigma = sqrt(1/2) * 10^(ray_std/20);
+h = PL*SS*Rff;
 
-t = 0:1e-6:1; % taxa de amostragem
+
 
 
