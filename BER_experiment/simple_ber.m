@@ -8,8 +8,7 @@ EbN0dB = -20:0;
 error = 0;
 
 % Generating the information;
-s = randi(5,1,bits); % randi([0 1],16)
-s = (s < 5);
+s = randi([0 1],1,bits);
 x = BPSK_mapping(s);
  
 % generating A and B;
