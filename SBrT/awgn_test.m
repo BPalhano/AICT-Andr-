@@ -1,60 +1,57 @@
-clear;
-clc;
-close all;
+clear;clc;close all;
 
 % Range de SNR a ser percorrido
-EbN0dB = -20:0.5:0;
+EbN0dBvtr = -10:0.5:15;
 % SISO AWGN System
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-bits = 1e2; % n° de bits na transmissão
-Mod_order = 4; % ordem da modulação
-data = randi([0 Mod_order-1],bits, 1); % gero o vetor de bits
-txSig_tot = pskmod(data, Mod_order, pi/Mod_order); % uso a função de mod. psk
+symb = 16; % n° de bits na transmissão
+Mod_order = 2; % ordem da modulação
+data = randi([0 Mod_order-1],symb, 1); % gero o vetor de bits
+txSig_mod = pskmod(data, Mod_order); % uso a função de mod. psk
 
 % Variáveis auxiliares
 act_error = 0;  % n° de erros atual na potência de transmissão
-symbols = bits; % n° de bits transmitidos
+symb_tot = symb; % n° de bits transmitidos
 counter = 1; % contador auxiliar
-spec_error = 1e6; % n° de erros esperados
-errors = zeros(size(EbN0dB)); % vetor de erros por potência de transmissão
+spec_error = 1e2; % n° de erros esperados
+errors = zeros(size(EbN0dBvtr)); % vetor de erros por potência de transmissão
 
-general_Theoretical_error = @(range, M) 2*qfunc(sqrt(2*range)*sin(pi/M));
+% Função genérica para erro em modulação M-PSK.
+general_Theoretical_error = @(range, M) 2*qfunc(sqrt(2*db2pow(range))*sin(pi/M));
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tx1 = txSig_tot(1:bits/2,:); % vetor auxiliar
-tx2 = txSig_tot(bits/2+1:end,:); % vetor auxiliar
+tx1 = txSig_mod(1:symb/2,:); % vetor auxiliar
+tx2 = txSig_mod(symb/2+1:end,:); % vetor auxiliar
 
 txSig = kron(tx1, tx2); % símbolos de transmissão
 
-for i = EbN0dB
-    
-    disp("Actual SNR:")
-    disp(i)
+for EbN0 = EbN0dBvtr
 
     while act_error < spec_error
             
         % Adiciono ruido branco no sinal transmitido
-        sigma = 1 / (10^(i/10));
+        sigma = 1 / (10^(EbN0/10));
         N = sqrt(sigma/2)*(randn(size(txSig)) + 1i*randn(size(txSig)));
 
         y = txSig + N;
             
         % Estimo os vetores de símbolos
-        [rx2,rx1] = norm_lskf(reshape(y, [bits/2 bits/2]), tx1(1,1), tx2(1,1));
+        [rx2,rx1] = norm_lskf(reshape(y, [symb/2 symb/2]), tx1(1,1), tx2(1,1));
 
         % Recomponho os vetores e aplico o decisor para BPSK:
-        rxSig = [rx1' rx2'];
-        rxSig_tot = pskdemod(rxSig, Mod_order);
+        rxSig_mod = [rx1' rx2'];
+        rxSig_dmod = pskdemod(rxSig_mod, Mod_order);
 
         % Armazeno a quantidade de erros e de símbolos transmitidos
-        act_error = act_error + biterr(data, rxSig_tot');
-        symbols = symbols + bits;
+        act_error = act_error + biterr(data, (rxSig_dmod'));
+        symb_tot = symb_tot + symb;
         
         % Condição de parada secundária (saturação
 
         
-        disp("number of erros")
-        disp(act_error)
+        disp(["Actual SNR: " EbN0 "número de erros: " num2str(act_error) "/" num2str(symb_tot)])
+        
 
     end
 
@@ -62,10 +59,10 @@ for i = EbN0dB
     
 
     % Armazeno o erro para a SNR atual
-    errors(counter) = act_error / (act_error + symbols);
+    errors(counter) = act_error / (act_error + symb_tot);
     act_error = 0;
     % Redefino como zero a quantidade de símbolos transmitidos
-    symbols = 0;
+    symb_tot = 0;
 
     % Adiciono um ao contador auxiliar
     counter = counter + 1;
@@ -75,9 +72,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Plot do erro encontrado
-semilogy(EbN0dB, errors, 'Color', 'Red'); 
+semilogy(EbN0dBvtr, errors, 'Color', 'Red'); 
 hold on
-semilogy(EbN0dB, qfunc(sqrt(2*db2pow(EbN0dB))), 'Color', 'Blue')
+semilogy(EbN0dBvtr, general_Theoretical_error(EbN0dBvtr,Mod_order), 'Color', 'Blue')
+grid on
 hold off
 
 xlabel("Eb/N0");
