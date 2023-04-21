@@ -19,7 +19,7 @@ counter = 1; % contador auxiliar
 spec_error = 1e6; % n° de erros esperados
 errors = zeros(size(EbN0dB)); % vetor de erros por potência de transmissão
 
-general_Theoretical_error = @(range, M) 2*qfunc(sqrt(2*range)*sin(pi/M));
+general_Theoretical_error = @(range) 2*qfunc(sqrt(2*range))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tx1 = txSig_tot(1:bits/2,:); % vetor auxiliar
 tx2 = txSig_tot(bits/2+1:end,:); % vetor auxiliar
