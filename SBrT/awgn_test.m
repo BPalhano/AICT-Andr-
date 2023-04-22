@@ -47,9 +47,6 @@ for EbN0 = EbN0dBvtr
         act_error = act_error + biterr(data, (rxSig_dmod'));
         symb_tot = symb_tot + symb;
         
-        % Condição de parada secundária (saturação
-
-        
         disp(["Actual SNR: " EbN0 "número de erros: " num2str(act_error) "/" num2str(symb_tot)])
         
 

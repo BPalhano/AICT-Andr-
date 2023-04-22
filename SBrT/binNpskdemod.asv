@@ -1,0 +1,16 @@
+function [demod_Signal] = binNpskdemod(mod_Signal, mod_Order)
+
+P = log2(Mod_order);
+
+if Mod_order == 2 % BPSK case
+    
+    for i = 1:N
+        if symb(i) < 1
+        
+            symb(i) = exp(1j*pi); 
+        end
+    end
+
+
+end
+

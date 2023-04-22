@@ -1,4 +1,4 @@
-function [A,B] = norm_lskf(X, A, B)
+function [A,B] = norm_lskf(tensor, A, B)
     % Normalized Least-Squares Kronecker Factorization for matrix.
     % A kron B = vec(BA^T) = B o A
     % Â = u(:,1)*sqrt(sigma), ^B = v*(:,1)*sqrt(sigma); 
@@ -17,12 +17,9 @@ function [A,B] = norm_lskf(X, A, B)
     [m n] = size(A);
     [p,q] = size(B);
 
-    [mp, nq] = size(X);
+    [mp, nq] = size(tensor);
     
-    X_til = zeros(p*q, m*n);
-    for i = 1:p
-        vec_block = X()
-    end
+    
     
     
     
