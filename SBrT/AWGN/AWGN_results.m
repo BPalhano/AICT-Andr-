@@ -28,11 +28,10 @@ SISO_AWGN_32PSK = [0.130982367758186	0.144927536231884	0.134487350199734	0.14285
 
 % 12 símbolos => CR = 5.3 (2 símbolos em cada constelação)
 % 6 vetores (após kronecker => 64 símbolos)
-SISO_AWGB_64PSK = [];
+SISO_AWGN_64PSK = [0.106918238993711	0.0891438658428950	0.0891438658428950	0.0776397515527950	0.0902527075812274	0.0630855715178014	0.0561797752808989	0.0455764075067024	0.0373134328358209	0.0174947515745276	0.0138350857775318	0.0111209964412811	0.00563316809373592	0.00266638225255973	0.00151892581566316	0.000740784639089724	0.000285756741001520	0.000135679319215448	5.1825e-05	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0];
 
 t = tiledlayout(3,3);
-% Scatterploting
-title('AWGN M-PSK BER')
+
 nexttile
 semilogy(EbN0dB, SISO_AWGN_BPSK, 'Color', 'Red'); 
 hold on
@@ -102,26 +101,41 @@ ylabel("BER");
 ylim([1e-4 1e0])
 xlim([EbN0dB(1) 35])
 
-legend({'16PSK-LSKF-AWGN', 'Theoretical error for 32PSK-AWGN'})
+legend({'32PSK-LSKF-AWGN', 'Theoretical error for 32PSK-AWGN'})
+grid on
+hold off
+
+nexttile
+semilogy(EbN0dB, SISO_AWGN_64PSK, 'Color', 'Red')
+hold on
+semilogy(-10:0.5:35, general_Theoretical_error(-10:0.5:35,64), 'Color', 'Blue')
+xlabel("Eb/N0");
+ylabel("BER");
+
+ylim([6e-5 1e0])
+xlim([EbN0dB(1) 35])
+
+legend({'64PSK-LSKF-AWGN', 'Theoretical error for 64PSK-AWGN'})
 grid on
 hold off
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure;
-semilogy(-10:0.5:35, general_Theoretical_error(-10:0.5:35,32), 'Color', 'black')
+semilogy(-10:0.5:35, general_Theoretical_error(-10:0.5:35,64), 'Color', 'black', 'Marker','diamond')
 hold on 
-semilogy(EbN0dB, SISO_AWGN_BPSK, 'Color', 'red')
-semilogy(EbN0dB, SISO_AWGN_QPSK, 'Color', 'cyan')
-semilogy(EbN0dB, SISO_AWGN_8PSK, 'Color', 'black')
-semilogy(EbN0dB, SISO_AWGN_16PSK, 'Color', 'blue')
-semilogy(EbN0dB, SISO_AWGN_32PSK, 'Color', 'green')
+semilogy(EbN0dB, SISO_AWGN_BPSK, 'Color', 'red', 'Marker', '+')
+semilogy(EbN0dB, SISO_AWGN_QPSK, 'Color', 'cyan', 'Marker', 'o')
+semilogy(EbN0dB, SISO_AWGN_8PSK, 'Color', 'black', 'Marker', '*')
+semilogy(EbN0dB, SISO_AWGN_16PSK, 'Color', 'blue', 'Marker', '.')
+semilogy(EbN0dB, SISO_AWGN_32PSK, 'Color', 'green', 'Marker', 'x')
+semilogy(EbN0dB, SISO_AWGN_64PSK, 'Color', 'yellow', 'Marker','square')
 grid on
 
 xlabel("Eb/N0");
 ylabel("BER");
-legend({'Theoretical error for 32PSK-AWGN','BPSK-LSKF-AWGN', 'QPSK-LSKF-AWGN', ...
-    '8PSK-LSKF-AWGN', '32PSK-LSKF-AWGN', '32PSK-LSKF-AWGN'})
+legend({'Theoretical error for 64PSK-AWGN','BPSK-LSKF-AWGN', 'QPSK-LSKF-AWGN', ...
+    '8PSK-LSKF-AWGN', '32PSK-LSKF-AWGN', '32PSK-LSKF-AWGN', '64PSK-LSKF-AWGN'})
 
 
 ylim([1e-4 1e0])
