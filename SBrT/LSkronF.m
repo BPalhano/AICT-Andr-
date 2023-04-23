@@ -25,25 +25,9 @@ function [Ahat,Bhat] = LSkronF(C,ia,ja,ib,jb, pA, pB)
     ahat = sqrt(S(1,1)).*conj(V(:,1));
     bhat = sqrt(S(1,1)).*U(:,1);
 
-    if ahat(1,1) - pA ~= 0
-        ahat = ahat *(-1)*(pA/ahat(1,1));
-        
+    ahat = ahat *(pA/ahat(1,1));
+    bhat = bhat *(pB/bhat(1,1));
     
-
-    else
-        ahat = ahat *(pA/ahat(1,1));
-        
-    
-    end
-    
-    if bhat(1,1) - pB ~= 0
-        bhat = bhat *(-1)*(pB/bhat(1,1));
-
-    else
-        bhat = bhat *(pB/bhat(1,1));
-
-    end
-
     Ahat = reshape(ahat,[ia ja]);
     Bhat = reshape(bhat, [ib jb]);
 end

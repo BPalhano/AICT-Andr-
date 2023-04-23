@@ -1,4 +1,4 @@
-function [A,B] = norm_lskf(X, A, B)
+function [Ahat,Bhat] = norm_lskf(X, A, B)
     % Normalized Least-Squares Kronecker Factorization for matrix.
     % A kron B = vec(BA^T) = B o A
     % Â = u(:,1)*sqrt(sigma), ^B = v*(:,1)*sqrt(sigma); 
@@ -14,20 +14,7 @@ function [A,B] = norm_lskf(X, A, B)
 
     % Decomponho o tensor usando SVD
     
-    [m n] = size(A);
-    [p,q] = size(B);
-
-    [mp, nq] = size(X);
-    
-    X_til = zeros(p*q, m*n);
-    for i = 1:p
-        vec_block = X()
-    end
-    
-    
-    
-    
-    GPUtensor = gpuArray(tensor);
+    GPUtensor = gpuArray(X);
     [u,s,v] = svd(GPUtensor);
     
     u = gather(u);
@@ -38,17 +25,17 @@ function [A,B] = norm_lskf(X, A, B)
     sig = s(1,1);
  
     % Estimo o vetor A
-    A = u(:,1) * sqrt(sig);
+    Ahat = u(:,1) * sqrt(sig);
     % Estimo o vetor B
-    B = sqrt(sig) * conj(v(:,1));
+    Bhat = sqrt(sig) * conj(v(:,1));
 
     % Normalizo o vetor A
-    norm_A = pA / A(1,1);
-    A = A * norm_A;
+    norm_A = A(1,1) / Ahat(1,1);
+    Ahat = Ahat .* norm_A;
     
     % Normalizo o vetor B
-    norm_B = pB / B(1,1);
-    B = B * norm_B;
+    norm_B = B(1,1) / Bhat(1,1);
+    Bhat = Bhat .* norm_B;
 
 
 end
