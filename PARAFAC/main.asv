@@ -1,0 +1,11 @@
+clear; clc; close all;
+
+x = randn(2,12);
+y = randn(4,5);
+z = randn(3,5);
+
+[ia,ja = size(x);
+[ib,jb ]= size(y);
+[ic,jc] = size(z);
+
+x_unf1 = x*(tensor.mtx_prod_kr(z,y));
